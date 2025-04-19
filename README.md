@@ -1,4 +1,4 @@
-# 🚀 LinkedIn Post Generator
+# 🚀✨ LinkedIn Post Generator
 A clean, interactive web application that generates professional LinkedIn posts using Google's Gemini AI API.
 
 ## 🌟 Features
@@ -49,9 +49,9 @@ cd LinkedIn-Post-Generator
 
 ## 🔒 Privacy and Security
 
-🔑 Your Google Gemini API key is stored locally in your browser's localStorage
-🛡️ No data is sent to any servers other than Google's Gemini API
-💻 All post generation happens client-side
+- 🔑 Your Google Gemini API key is stored locally in your browser's localStorage
+- 🛡️ No data is sent to any servers other than Google's Gemini API
+- 💻 All post generation happens client-side
 
 ## 🤝 Contribution
 
