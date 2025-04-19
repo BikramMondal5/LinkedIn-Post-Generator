@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Post Generator</title>
+    <style>
+        :root {
+            --primary: #0077B5;
+            --primary-light: #0095e0;
+            --primary-dark: #00669c;
+            --secondary: #f3f6f8;
+            --text: #333;
+            --text-light: #666;
+            --success: #0caa6e;
+            --error: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/1024px-LinkedIn_icon.svg.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            background-color: var(--secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-option:hover {
+            background-color: #e6ebf0;
+        }
+
+        .checkbox-option input {
+            width: auto;
+            margin-right: 6px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-icon {
+            margin-right: 8px;
+        }
+
+        .output-section {
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+            display: none;
+        }
+
+        .output-section.visible {
+            display: block;
+        }
+
+        .post-preview {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #888;
+        }
+
+        .post-meta h3 {
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .post-meta p {
+            font-size: 14px;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .post-content {
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .post-content p {
+            margin-bottom: 15px;
+        }
+
+        .post-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6ebf0;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .loader.visible {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 119, 181, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--error);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .success-message {
+            background-color: rgba(12, 170, 110, 0.1);
+            color: var(--success);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+
+        .api-key-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .api-key-modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .checkbox-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"></div>
+            <h1>LinkedIn Post Generator</h1>
+        </header>
+
+        <p class="subtitle">Create engaging, professional LinkedIn posts with AI assistance. Powered by Google Gemini.
+        </p>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="input-section">
+            <h2>Post Details</h2>
+
+            <div class="form-group">
+                <label for="industry">Your Industry</label>
+                <select id="industry">
+                    <option value="">Select your industry</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Education">Education</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Retail">Retail</option>
+                    <option value="Manufacturing">Manufacturing</option>
+                    <option value="Consulting">Consulting</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Nonprofit">Nonprofit</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="topic">Post Topic</label>
+                <input type="text" id="topic" placeholder="E.g., Leadership, Industry Trends, Personal Achievement">
+            </div>
+
+            <div class="form-group">
+                <label for="keyPoints">Key Points (optional)</label>
+                <textarea id="keyPoints" placeholder="List any key points you want to include in your post"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Post Style</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="radio" name="style" value="Professional" checked> Professional
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="radio" name="style" value="Conversational"> Conversational
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="radio" name="style" value="Inspirational"> Inspirational
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="radio" name="style" value="Educational"> Educational
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Include</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeEmoji"> Emojis
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeHashtags"> Hashtags
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeQuestion"> Questions
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeStats"> Statistics/Data (if applicable)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="length">Post Length</label>
+                <select id="length">
+                    <option value="short">Short (1-2 paragraphs)</option>
+                    <option value="medium" selected>Medium (3-4 paragraphs)</option>
+                    <option value="long">Long (5+ paragraphs)</option>
+                </select>
+            </div>
+
+            <button id="generateBtn" class="btn">
+                <span class="btn-icon">✨</span> Generate Post
+            </button>
+        </div>
+
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+            <p>Creating your LinkedIn post...</p>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <h2>Your Generated LinkedIn Post</h2>
+
+            <div class="post-preview">
+                <div class="post-header">
+                    <div class="post-avatar">👤</div>
+                    <div class="post-meta">
+                        <h3>Your Name</h3>
+                        <p>Your Title • Your Company</p>
+                    </div>
+                </div>
+
+                <div class="post-content" id="postContent"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="copyBtn" class="btn">
+                    <span class="btn-icon">📋</span> Copy to Clipboard
+                </button>
+                <button id="regenerateBtn" class="btn btn-secondary">
+                    <span class="btn-icon">🔄</span> Regenerate
+                </button>
+                <button id="editBtn" class="btn btn-secondary">
+                    <span class="btn-icon">✏️</span> Edit Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="api-key-modal" id="apiKeyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>API Key Required</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <p>To use this LinkedIn Post Generator, you need to provide your Google Gemini API key.</p>
+            <div class="form-group">
+                <label for="apiKey">Google Gemini API Key</label>
+                <input type="password" id="apiKey" placeholder="Enter your API key">
+            </div>
+            <p style="font-size: 12px; color: var(--text-light); margin-bottom: 20px;">
+                Your API key is stored locally in your browser and never sent to our servers.
+            </p>
+            <button id="saveApiKey" class="btn">Save API Key</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the Google Generative AI library
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const generateBtn = document.getElementById('generateBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const editBtn = document.getElementById('editBtn');
+            const apiKeyModal = document.getElementById('apiKeyModal');
+            const saveApiKeyBtn = document.getElementById('saveApiKey');
+            const closeModalBtn = document.getElementById('closeModal');
+            const outputSection = document.getElementById('outputSection');
+            const loader = document.getElementById('loader');
+            const postContent = document.getElementById('postContent');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // Check if API key exists
+            let apiKey = localStorage.getItem('geminiApiKey');
+            if (!apiKey) {
+                apiKeyModal.classList.add('visible');
+            }
+
+            // Save API key
+            saveApiKeyBtn.addEventListener('click', () => {
+                const keyInput = document.getElementById('apiKey');
+                if (keyInput.value.trim() === '') {
+                    showError('Please enter a valid API key');
+                    return;
+                }
+
+                localStorage.setItem('geminiApiKey', keyInput.value.trim());
+                apiKey = keyInput.value.trim();
+                apiKeyModal.classList.remove('visible');
+                showSuccess('API key saved successfully!');
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', () => {
+                apiKeyModal.classList.remove('visible');
+            });
+
+            // Generate post
+            generateBtn.addEventListener('click', generatePost);
+            regenerateBtn.addEventListener('click', generatePost);
+
+            // Copy to clipboard
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = postContent.innerText;
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showSuccess('Post copied to clipboard!');
+                    })
+                    .catch(err => {
+                        showError('Failed to copy text: ' + err);
+                    });
+            });
+
+            // Edit post
+            editBtn.addEventListener('click', () => {
+                outputSection.classList.remove('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            async function generatePost() {
+                // Get values
+                const industry = document.getElementById('industry').value;
+                const topic = document.getElementById('topic').value;
+                const keyPoints = document.getElementById('keyPoints').value;
+                const style = document.querySelector('input[name="style"]:checked').value;
+                const includeEmoji = document.getElementById('includeEmoji').checked;
+                const includeHashtags = document.getElementById('includeHashtags').checked;
+                const includeQuestion = document.getElementById('includeQuestion').checked;
+                const includeStats = document.getElementById('includeStats').checked;
+                const length = document.getElementById('length').value;
+
+                // Validate inputs
+                if (!topic) {
+                    showError('Please enter a post topic');
+                    return;
+                }
+
+                if (!industry) {
+                    showError('Please select your industry');
+                    return;
+                }
+
+                // Check API key
+                if (!apiKey) {
+                    apiKeyModal.classList.add('visible');
+                    return;
+                }
+
+                try {
+                    // Show loader
+                    loader.classList.add('visible');
+                    outputSection.classList.remove('visible');
+                    hideError();
+                    hideSuccess();
+
+                    // Create prompt
+                    const prompt = createPrompt(industry, topic, keyPoints, style, includeEmoji, includeHashtags, includeQuestion, includeStats, length);
+
+                    // Call Gemini API
+                    const generatedContent = await callGeminiApi(prompt);
+
+                    // Display result
+                    postContent.textContent = generatedContent;
+                    outputSection.classList.add('visible');
+
+                    // Scroll to result
+                    outputSection.scrollIntoView({ behavior: 'smooth' });
+                } catch (error) {
+                    showError('Error generating post: ' + error.message);
+                    console.error('Error:', error);
+                } finally {
+                    // Hide loader
+                    loader.classList.remove('visible');
+                }
+            }
+
+            function createPrompt(industry, topic, keyPoints, style, includeEmoji, includeHashtags, includeQuestion, includeStats, length) {
+                let lengthDescription;
+                switch (length) {
+                    case 'short':
+                        lengthDescription = '1-2 paragraphs';
+                        break;
+                    case 'medium':
+                        lengthDescription = '3-4 paragraphs';
+                        break;
+                    case 'long':
+                        lengthDescription = '5+ paragraphs';
+                        break;
+                }
+
+                let inclusions = [];
+                if (includeEmoji) inclusions.push('emojis');
+                if (includeHashtags) inclusions.push('relevant hashtags');
+                if (includeQuestion) inclusions.push('engaging questions');
+                if (includeStats) inclusions.push('relevant statistics or data points if applicable');
+
+                let prompt = `Create a professional LinkedIn post for someone in the ${industry} industry about ${topic}.`;
+
+                if (keyPoints) {
+                    prompt += ` Include these key points: ${keyPoints}.`;
+                }
+
+                prompt += ` The post should have a ${style.toLowerCase()} tone and be ${lengthDescription} in length.`;
+
+                if (inclusions.length > 0) {
+                    prompt += ` Please include ${inclusions.join(', ')}.`;
+                }
+
+                prompt += ` Make sure the post is engaging, professional, and follows LinkedIn best practices. Do not include any introductory or explanatory text - just provide the final post content ready to be copied and pasted.`;
+
+                return prompt;
+            }
+
+            async function callGeminiApi(prompt) {
+                try {
+                    // Initialize Gemini API with the correct class
+                    const genAI = new GoogleGenerativeAI(apiKey);
+                    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+                    // Generate content
+                    const result = await model.generateContent(prompt);
+                    const response = result.response;
+                    const text = response.text();
+
+                    return text;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    if (error.message.includes('API key')) {
+                        localStorage.removeItem('geminiApiKey');
+                        apiKeyModal.classList.add('visible');
+                        throw new Error('Invalid API key. Please enter a valid Google Gemini API key.');
+                    }
+                    throw error;
+                }
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('visible');
+                setTimeout(() => {
+                    errorMessage.classList.remove('visible');
+                }, 5000);
+            }
+
+            function hideError() {
+                errorMessage.classList.remove('visible');
+            }
+
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.classList.add('visible');
+                setTimeout(() => {
+                    successMessage.classList.remove('visible');
+                }, 3000);
+            }
+
+            function hideSuccess() {
+                successMessage.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+
+</html>
