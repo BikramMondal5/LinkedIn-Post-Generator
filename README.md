@@ -3,12 +3,12 @@ A clean, interactive web application that generates professional LinkedIn posts 
 
 ## 🌟 Features
 - 🤖 AI-Powered Content Generation: Leverages Google's Gemini AI to create engaging LinkedIn posts
-- 🔧 Customizable Options: Tailor your posts with industry-specific content, various styles, and formatting preferences
+- 🔧 Customizable: Tailor your posts with industry-specific content, various styles, and formatting preferences
 - 👁️ Interactive Preview: See how your post will look on LinkedIn before posting
 - 📋 Copy to Clipboard: Easily copy your generated post with one click
 - 🔒 Secure API Key Handling: Your Google Gemini API key is stored locally in your browser
 
-🔍 How It Works
+## 🔍 How It Works
 
 1. Enter your Google Gemini API key (stored securely in your browser)
 2. Fill in the post details:
@@ -47,7 +47,7 @@ cd LinkedIn-Post-Generator
 
 4. Open the web browser to preview the application.
 
-🔒 Privacy and Security
+## 🔒 Privacy and Security
 
 🔑 Your Google Gemini API key is stored locally in your browser's localStorage
 🛡️ No data is sent to any servers other than Google's Gemini API
